@@ -10,9 +10,9 @@
       "default_popup": "popup.html",
       "default_icon": {
          "16": "images/Icon_16.png",
-         "32": "images/Icon32.png",
-         "48": "images/Icon48.png",
-         "128": "images/Icon128.png"
+         "32": "images/Icon_32.png",
+         "48": "images/Icon_48.png",
+         "128": "images/Icon_128.png"
       }
    },
    "permissions": [
@@ -25,10 +25,10 @@
       "*://*/*"
    ],
    "icons": {
-      "16": "images/Icon16.png",
-      "32": "images/Icon32.png",
-      "48": "images/Icon48.png",
-      "128": "images/Icon128.png"
+      "16": "images/Icon_16.png",
+      "32": "images/Icon_32.png",
+      "48": "images/Icon_48.png",
+      "128": "images/Icon_128.png"
    },
    "content_scripts": [
       {
