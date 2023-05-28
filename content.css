@@ -1,5 +1,11 @@
 .jx06pet{
-    z-index : 9999999999;
+    z-index : 9999;
+    filter: blur(0px) !important;
+    user-select: none;
+    /* pointer-events: none; */
+}
+.jx06fish{
+    z-index : 9990;
     filter: blur(0px) !important;
     user-select: none;
     /* pointer-events: none; */
