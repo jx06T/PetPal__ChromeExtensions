@@ -60,7 +60,7 @@ class aPet {
         }
         this.distance -= this.state == 2 ? 1.4 : this.state == 1 ? 1.1 : 2.1
         if (this.vy < 2.8) {
-            this.d = this.vx * 6
+            this.d = this.vx * 6 / (this.speed/8)
         } else {
             this.d += this.vx * 4.5
         }
@@ -149,8 +149,8 @@ class aFish {
             this.count = this.count * -1
         }
         this.d += this.count > this.d ? 5 : -5
-        this.x += (MouseX - this.x) * 0.4
-        this.y += (MouseY - this.y) * 0.4
+        this.x += (MouseX - this.x) * 0.45
+        this.y += (MouseY - this.y) * 0.45
         this.img.style.transform = 'rotate(' + (-90 + this.d) + 'deg)'
         this.img.style.left = this.x - this.img.offsetWidth + 'px';
         this.img.style.top = this.y - this.img.offsetHeight / 2 + 'px';
