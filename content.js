@@ -40,7 +40,7 @@ class aPet {
         if (this.distance < 0.5 && (this.state == 1 || this.state == 2)) {
             this.x -= this.vx
             this.y -= this.vy
-            this.destination = MouseX + MouseY > 10 && this.state == 2 ? [MouseX, MouseY] : GetRandXY()
+            this.destination = MouseX + MouseY > 1 && this.state == 2 ? [MouseX, MouseY] : GetRandXY()
             this.vx = this.destination[0] - this.x
             this.vy = this.destination[1] - this.y
             this.distance = Math.sqrt(this.vx * this.vx + this.vy * this.vy) / this.speed
@@ -78,8 +78,8 @@ class aPet {
             this.touchM = this.touchM + 1
             if (this.state == 0 || this.state == 1) {
                 this.state = 2
-                this.move()
                 this.timer = 22
+                this.distance = 0
                 return
             }
             if (this.touchM > 40) {
@@ -87,9 +87,9 @@ class aPet {
                 if (this.state == 4) return
                 this.state = 4
                 this.img.src = IMG_URL + "pet_walk.gif"
-                this.timer = 5
+                this.timer = 4
             } else if (this.touchM > 15) {
-                this.move()
+                this.distance = 0
             }
         } else {
             this.touchM = this.touchM > 0 ? this.touchM - 1 : 0
@@ -97,7 +97,6 @@ class aPet {
                 this.state = 0
             }
         }
-        console.log(this.state)
     }
     draw() {
         this.img.style.left = this.x - this.img.offsetWidth / 2 + 'px';
