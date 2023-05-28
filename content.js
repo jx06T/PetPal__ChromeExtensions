@@ -19,7 +19,7 @@ class aPet {
 
         this.destination = [x, y]
         this.distance = 0
-        this.timer = 10
+        this.timer = 7
         this.state = 0
         this.touchM = 0
         this.food
@@ -59,8 +59,8 @@ class aPet {
             return
         }
         this.distance -= this.state == 2 ? 1.4 : this.state == 1 ? 1.1 : 2.1
-        if (this.vy < 2.8) {
-            this.d = this.vx * 6 / (this.speed/8)
+        if (this.vy < 2.5) {
+            this.d = this.vx * 6 / (this.speed / 8)
         } else {
             this.d += this.vx * 4.5
         }
@@ -75,8 +75,8 @@ class aPet {
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.distance < 0.5) {
                 this.food.eaten()
-                this.state = 0
-                this.timer = 10
+                this.state = 5
+                this.timer = 26
                 this.vx = 0
                 this.vy = 0
             }
@@ -85,11 +85,11 @@ class aPet {
         if (this.timer < 0) {
             if (this.state == 0) {
                 this.state = 1
-                this.timer = 8
+                this.timer = 9
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
                 this.state = this.state == 4 ? 5 : 0
-                this.timer = this.state == 4 ? 18 : 10
+                this.timer = this.state == 4 ? 18 : this.state == 1 ? 7 : 10
                 this.vx = 0
                 this.vy = 0
                 this.img.src = IMG_URL + "pet_rest.gif"
@@ -117,6 +117,7 @@ class aPet {
         } else {
             this.touchM = this.touchM > 0 ? this.touchM - 1 : 0
             if (this.state == 5) {
+                this.img.src = IMG_URL + "pet_rest.gif"
                 this.state = 0
             }
         }
