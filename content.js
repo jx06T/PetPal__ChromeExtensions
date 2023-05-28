@@ -105,13 +105,13 @@ class aPet {
                 this.distance = 0
                 return
             }
-            if (this.touchM > 40) {
+            if (this.touchM > 36) {
                 this.touchM = 0
                 if (this.state == 4 || this.state == 5) return
                 this.state = 4
                 this.img.src = IMG_URL + "pet_walk.gif"
                 this.timer = 5
-            } else if (this.touchM > 10) {
+            } else if (this.touchM > 8) {
                 this.distance = 0
             }
         } else {
