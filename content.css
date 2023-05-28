@@ -8,5 +8,6 @@
     z-index : 9990;
     filter: blur(0px) !important;
     user-select: none;
+    transform-origin: right center;
     /* pointer-events: none; */
 }

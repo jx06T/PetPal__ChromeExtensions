@@ -11,6 +11,11 @@ function debug(...d) {
     console.log(d);
 }
 chrome.contextMenus.onClicked.addListener((info, tab) => {
+    chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: debug,
+        args: [info]
+    });
     if (info.menuItemId === "sampleContextMenu") {
         // chrome.tabs.create({ url: "https://www.youtube.com" });
         // chrome.scripting.executeScript({
@@ -22,19 +27,15 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         //     files: ['ttttt.css']
         // });
 
-        chrome.tabs.sendMessage(tab.id, { greeting: "hello" });
+        chrome.tabs.sendMessage(tab.id, { greeting: "NewFish" });
 
-        (async () => {
-            const response = await chrome.tabs.sendMessage(tab.id, { greeting: "掰掰lo" });
-            // do something with response here, not outside the function
+        // (async () => {
+        //     const response = await chrome.tabs.sendMessage(tab.id, { greeting: "掰掰lo" });
+        //     // do something with response here, not outside the function
 
-            chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                function: debug,
-                args: [response]
-            });
+        //    
 
-        })();
+        // })();
 
     }
 });
