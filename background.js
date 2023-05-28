@@ -2,7 +2,7 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "sampleContextMenu",
         title: "Fish",
-        contexts: ["page"],
+        contexts: ["all"],
         // type :"checkbox"
     });
 });

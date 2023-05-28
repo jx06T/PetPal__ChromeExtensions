@@ -59,7 +59,7 @@ class aPet {
             return
         }
         this.distance -= this.state == 2 ? 1.4 : this.state == 1 ? 1.1 : 2.1
-        if (this.vy < 3) {
+        if (this.vy < 2.8) {
             this.d = this.vx * 6
         } else {
             this.d += this.vx * 4.5
