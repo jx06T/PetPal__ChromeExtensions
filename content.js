@@ -25,7 +25,6 @@ class aPet {
 
         const myimg = document.createElement("img");
         myimg.src = IMG_URL + "pet_rest.gif"
-        myimg.id = "jx06cnjlwadifj";
         myimg.setAttribute("class", "jx06pet");
         document.body.insertBefore(myimg, document.body.firstChild);
         myimg.style.position = 'fixed';
@@ -104,9 +103,23 @@ class aPet {
         this.img.style.transform = 'rotate(' + (this.d % 360) + 'deg)'
     }
 }
+
+class aFish {
+    constructor(x, y, size) {
+        const myimg = document.createElement("img");
+        myimg.src = IMG_URL + "fish.gif"
+        myimg.setAttribute("class", "jx06fish");
+        document.body.insertBefore(myimg, document.body.firstChild);
+        myimg.style.position = 'fixed';
+        myimg.style.height = size + "px";
+        myimg.style.left = x + "px";
+        myimg.style.top = y + "px";
+        this.img = myimg
+    }
+}
 // -----------------------------------------------------------------------
 const MyPet = new aPet(...GetRandXY(), 120)
-
+let fishes = []
 setInterval(() => {
     MyPet.move()
     MyPet.set()
@@ -120,9 +133,9 @@ document.addEventListener('mousemove', (event) => {
 });
 chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
-        console.log(sender.tab ? "from " + sender.tab.url : "from the extension");
-        console.log(request.greeting)
-
+        // console.log(sender.tab ? "from " + sender.tab.url : "from the extension");
+        // console.log(request.greeting)
+        fishes.push(new aFish(MouseX, MouseY, Math.random() * 40 + 30))
         sendResponse({ farewell: "ok" });
     }
 );

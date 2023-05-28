@@ -1,7 +1,7 @@
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "sampleContextMenu",
-        title: "餵食",
+        title: "Fish",
         contexts: ["page"],
         // type :"checkbox"
     });
@@ -31,7 +31,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 function: debug,
-                args: [response ]
+                args: [response]
             });
 
         })();
