@@ -39,7 +39,7 @@ class aPet {
         // this.foods = [{ 'x': x, 'y': y }]
     }
     move() {
-        if (this.state == 0||this.state==5) {
+        if (this.state == 0 || this.state == 5) {
             this.vx = 0
             this.vy = 0
             this.d = 0
@@ -178,8 +178,8 @@ const MyPet = new aPet(...GetRandXY(), 120)
 let fishes = []
 setInterval(() => {
     testD += testd
-    if (testD >14) testd = -3
-    if (testD < -14) testd =3
+    if (testD > 14) testd = -3
+    if (testD < -14) testd = 3
     MyPet.move()
     MyPet.set()
     MyPet.draw()
