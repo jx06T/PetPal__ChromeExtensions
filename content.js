@@ -2,6 +2,8 @@ const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtension
 let MouseX = 0;
 let MouseY = 0;
 const DELAY = 50
+let testD = 0
+let testd = 1
 function GetRandXY() {
     return [Math.random() * (window.innerWidth - 140) + 70, Math.random() * (window.innerHeight - 160) + 80]
 }
@@ -37,6 +39,12 @@ class aPet {
         // this.foods = [{ 'x': x, 'y': y }]
     }
     move() {
+        if (this.state == 0||this.state==5) {
+            this.vx = 0
+            this.vy = 0
+            this.d = 0
+            return
+        }
         if (this.state == 6 || this.distance < 0.5 && (this.state == 1 || this.state == 2)) {
             if (this.state == 6) {
                 this.speed = 5 + 5 * fishes.length
@@ -55,15 +63,17 @@ class aPet {
             this.vy = this.vy / this.distance
         }
         if (this.state == 4) {
-            this.d = this.d + this.speed * (this.touchM + 1)
+            this.d = this.d + this.speed * ((this.touchM / 1.8) + 1)
             return
         }
         this.distance -= this.state == 2 ? 1.4 : this.state == 1 ? 1.1 : 2.1
-        if (this.vy < 2.5) {
-            this.d = this.vx * 6 / (this.speed / 8)
-        } else {
-            this.d += this.vx * 4.5
-        }
+
+        // if (this.vy < 2.5) {
+        //     this.d = this.vx * 6 / (this.speed / 8)
+        // } else {
+        //     this.d += this.vx * 4.5
+        // }
+        this.d = (180 / Math.PI) * (this.vx > 0 ? Math.atan(this.vy / this.vx) : Math.PI + Math.atan(this.vy / this.vx)) + 90 + testD
         this.x += this.vx
         this.y += this.vy
     }
@@ -75,6 +85,7 @@ class aPet {
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.distance < 0.5) {
                 this.food.eaten()
+                this.img.src = IMG_URL + "pet_rest.gif"
                 this.state = 5
                 this.timer = 26
                 this.vx = 0
@@ -90,8 +101,6 @@ class aPet {
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
                 this.state = this.state == 4 ? 5 : 0
                 this.timer = this.state == 4 ? 18 : this.state == 1 ? 7 : 10
-                this.vx = 0
-                this.vy = 0
                 this.img.src = IMG_URL + "pet_rest.gif"
             }
 
@@ -168,6 +177,9 @@ class aFish {
 const MyPet = new aPet(...GetRandXY(), 120)
 let fishes = []
 setInterval(() => {
+    testD += testd
+    if (testD >14) testd = -3
+    if (testD < -14) testd =3
     MyPet.move()
     MyPet.set()
     MyPet.draw()
