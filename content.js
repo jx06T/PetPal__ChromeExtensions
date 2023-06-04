@@ -80,14 +80,16 @@ class aPet {
     set() {
         if (fishes.length > 0) {
             if (this.state != 6) {
-                MyPet.state = 6
-                MyPet.timer = 12
+                this.state = 6
+                // this.timer = 12
+                this.timer = Math.random() * 4 + 8
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.distance < 0.5) {
                 this.food.eaten()
                 this.img.src = IMG_URL + "pet_rest.gif"
                 this.state = 5
-                this.timer = 26
+                // this.timer = 26
+                this.timer = Math.random() * 4 + 24
                 this.vx = 0
                 this.vy = 0
             }
@@ -96,7 +98,8 @@ class aPet {
         if (this.timer < 0) {
             if (this.state == 0) {
                 this.state = 1
-                this.timer = 9
+                // this.timer = 9
+                this.timer = Math.random() * 4 + 7
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
                 this.state = this.state == 4 ? 5 : 0
@@ -110,7 +113,8 @@ class aPet {
             if (this.state == 0 || this.state == 1) {
                 this.img.src = IMG_URL + "pet_walk.gif"
                 this.state = 2
-                this.timer = 22
+                // this.timer = 22
+                this.timer = Math.random() * 4 + 20
                 this.distance = 0
                 return
             }
@@ -119,7 +123,8 @@ class aPet {
                 if (this.state == 4 || this.state == 5) return
                 this.state = 4
                 this.img.src = IMG_URL + "pet_walk.gif"
-                this.timer = 5
+                // this.timer = 5
+                this.timer = Math.random() * 4 + 3
             } else if (this.touchM > 8) {
                 this.distance = 0
             }
@@ -176,15 +181,25 @@ class aFish {
 // -----------------------------------------------------------------------
 const MyPet = new aPet(...GetRandXY(), 120)
 let fishes = []
+let Pets = []
+for (let i = 0; i <0; i++) {
+    Pets.push(new aPet(...GetRandXY(), 120))
+}
 setInterval(() => {
     testD += testd
-    if (testD > 14) testd = -3
-    if (testD < -14) testd = 3
+    if (testD > 11) testd = -3
+    if (testD < -11) testd = 3
     MyPet.move()
     MyPet.set()
     MyPet.draw()
     for (const fish of fishes) {
         fish.move()
+    }
+    for (const Pet of Pets) {
+        Pet.move()
+        Pet.set()
+        Pet.draw()
+
     }
 }, DELAY);
 
