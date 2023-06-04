@@ -7,6 +7,13 @@ let testd = 1
 function GetRandXY() {
     return [Math.random() * (window.innerWidth - 140) + 70, Math.random() * (window.innerHeight - 160) + 80]
 }
+function ResetAllPet() {
+    for (const Pet of Pets) {
+        Pet.state = 0
+    }
+    MyPet.state = 0
+}
+
 // -----------------------------------------------------------------------
 class aPet {
     // 建構函式
@@ -81,17 +88,18 @@ class aPet {
         if (fishes.length > 0) {
             if (this.state != 6) {
                 this.state = 6
-                // this.timer = 12
-                this.timer = Math.random() * 4 + 8
+                // MyPet.timer = 12
+                this.timer = Math.random() * 4 + 10
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.distance < 0.5) {
                 this.food.eaten()
                 this.img.src = IMG_URL + "pet_rest.gif"
                 this.state = 5
                 // this.timer = 26
-                this.timer = Math.random() * 4 + 24
+                MyPet.timer = Math.random() * 4 + 24
                 this.vx = 0
                 this.vy = 0
+                ResetAllPet()
             }
         }
         this.timer -= DELAY / 1000
@@ -99,7 +107,7 @@ class aPet {
             if (this.state == 0) {
                 this.state = 1
                 // this.timer = 9
-                this.timer = Math.random() * 4 + 7
+                MyPet.timer = Math.random() * 4 + 7
                 this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
                 this.state = this.state == 4 ? 5 : 0
@@ -114,7 +122,7 @@ class aPet {
                 this.img.src = IMG_URL + "pet_walk.gif"
                 this.state = 2
                 // this.timer = 22
-                this.timer = Math.random() * 4 + 20
+                MyPet.timer = Math.random() * 4 + 20
                 this.distance = 0
                 return
             }
@@ -124,7 +132,7 @@ class aPet {
                 this.state = 4
                 this.img.src = IMG_URL + "pet_walk.gif"
                 // this.timer = 5
-                this.timer = Math.random() * 4 + 3
+                MyPet.timer = Math.random() * 4 + 3
             } else if (this.touchM > 8) {
                 this.distance = 0
             }
@@ -182,13 +190,13 @@ class aFish {
 const MyPet = new aPet(...GetRandXY(), 120)
 let fishes = []
 let Pets = []
-for (let i = 0; i <0; i++) {
+for (let i = 0; i < 300; i++) {
     Pets.push(new aPet(...GetRandXY(), 120))
 }
 setInterval(() => {
     testD += testd
-    if (testD > 11) testd = -3
-    if (testD < -11) testd = 3
+    if (testD > 14) testd = -3
+    if (testD < -14) testd = 3
     MyPet.move()
     MyPet.set()
     MyPet.draw()
@@ -199,8 +207,8 @@ setInterval(() => {
         Pet.move()
         Pet.set()
         Pet.draw()
-
     }
+
 }, DELAY);
 
 // -----------------------------------------------------------------------
