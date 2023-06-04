@@ -11,7 +11,7 @@ function ResetAllPet() {
     for (const Pet of Pets) {
         Pet.state = 0
     }
-    MyPet.state = 0
+    // MyPet.state = 0
 }
 
 // -----------------------------------------------------------------------
@@ -187,7 +187,7 @@ class aFish {
     }
 }
 // -----------------------------------------------------------------------
-const MyPet = new aPet(...GetRandXY(), 120)
+// const MyPet = new aPet(...GetRandXY(), 120)
 let fishes = []
 let Pets = []
 for (let i = 0; i < 300; i++) {
@@ -197,9 +197,9 @@ setInterval(() => {
     testD += testd
     if (testD > 14) testd = -3
     if (testD < -14) testd = 3
-    MyPet.move()
-    MyPet.set()
-    MyPet.draw()
+    // MyPet.move()
+    // MyPet.set()
+    // MyPet.draw()
     for (const fish of fishes) {
         fish.move()
     }
