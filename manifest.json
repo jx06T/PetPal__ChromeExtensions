@@ -19,7 +19,8 @@
       "contextMenus",
       "tabs",
       "scripting",
-      "activeTab"
+      "activeTab",
+      "storage"
    ],
    "host_permissions": [
       "*://*/*"

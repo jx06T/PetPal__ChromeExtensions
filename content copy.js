@@ -1,7 +1,6 @@
 const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/"
 let MouseX = 0;
 let MouseY = 0;
-let isMouseDown = false;
 const DELAY = 50
 let testD = 0
 let testd = 1
@@ -10,16 +9,15 @@ function GetRandXY() {
 }
 function ResetAllPet() {
     for (const Pet of Pets) {
-        Pet.state = 5
+        Pet.state = 0
     }
 }
 
 // -----------------------------------------------------------------------
 class aPet {
     // 建構函式
-    constructor(x, y, size, color = 0) {
+    constructor(x, y, size) {
         this.size = size
-        this.color = color
         this.x = x;
         this.y = y;
         this.vx = 0;
@@ -30,7 +28,7 @@ class aPet {
         this.destination = [x, y]
         this.distance = 0
         this.timer = 7
-        this.state = 0//0沒事,1遊走,2跟隨,4轉圈,5冷靜,6吃魚,7睡覺
+        this.state = 0
         this.touchM = 0
         this.food
 
@@ -43,19 +41,11 @@ class aPet {
         myimg.style.height = size + "px";
         myimg.style.left = x + "px";
         myimg.style.top = y + "px";
-        myimg.style.filter = "blur(0px) hue-rotate(" + color + "deg)";
         this.img = myimg
+        // this.foods = [{ 'x': x, 'y': y }]
     }
     move() {
-        if (this.state == 0 || this.state == 5 || this.state == 7) {
-            if (this.state == 7 && this.touchM > 0) {
-                if (isMouseDown) {
-                    this.x = MouseX
-                    this.y = MouseY
-                } else {
-                    this.touchM = 0
-                }
-            }
+        if (this.state == 0 || this.state == 5) {
             this.vx = 0
             this.vy = 0
             this.d = 0
@@ -82,7 +72,6 @@ class aPet {
             this.d = this.d + this.speed * ((this.touchM / 1.8) + 1)
             return
         }
-
         this.distance -= this.state == 2 ? 1.4 : this.state == 1 ? 1.1 : 2.1
 
         // if (this.vy < 2.5) {
@@ -91,18 +80,20 @@ class aPet {
         //     this.d += this.vx * 4.5
         // }
         this.d = (180 / Math.PI) * (this.vx > 0 ? Math.atan(this.vy / this.vx) : Math.PI + Math.atan(this.vy / this.vx)) + 90 + testD
-
         this.x += this.vx
         this.y += this.vy
-
     }
     set() {
         if (fishes.length > 0) {
             if (this.state != 6) {
-                this.ChangeState(6, IMG_URL + "pet_walk.gif", 10, 14)
+                this.state = 6
+                this.timer = Math.random() * 4 + 10
+                this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.distance < 0.5) {
                 this.food.eaten()
-                this.ChangeState(5, IMG_URL + "pet_rest.gif", 24, 28)
+                this.img.src = IMG_URL + "pet_rest.gif"
+                this.state = 5
+                this.timer = Math.random() * 4 + 24
                 this.vx = 0
                 this.vy = 0
                 ResetAllPet()
@@ -111,22 +102,35 @@ class aPet {
         this.timer -= DELAY / 1000
         if (this.timer < 0) {
             if (this.state == 0) {
-                this.ChangeState(1, IMG_URL + "pet_walk.gif", 4, 7)
+                this.state = 1
+                // this.timer = 9
+                this.timer = Math.random() * 4 + 7
+                this.img.src = IMG_URL + "pet_walk.gif"
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
+                this.state = this.state == 4 ? 5 : 0
                 this.timer = this.state == 4 ? 18 : this.state == 1 ? 7 : 10
-                this.ChangeState(this.state == 4 ? 5 : 0, IMG_URL + "pet_rest.gif", null)
+                this.img.src = IMG_URL + "pet_rest.gif"
             }
 
         }
         if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.35) {
             this.touchM = this.touchM + 1
             if (this.state == 0 || this.state == 1) {
-                this.ChangeState(2, IMG_URL + "pet_walk.gif", 20, 24, 0)
+                this.img.src = IMG_URL + "pet_walk.gif"
+                this.state = 2
+                // this.timer = 22
+                this.timer = Math.random() * 4 + 20
+                this.distance = 0
+                // this.ChangeState(4, IMG_URL + "pet_walk.gif", 3, 7)
                 return
             }
             if (this.touchM > 36) {
                 this.touchM = 0
-                if (this.state == 4 || this.state == 5 || this.state == 7) return
+                if (this.state == 4 || this.state == 5) return
+                // this.state = 4
+                // this.img.src = IMG_URL + "pet_walk.gif"
+                // // this.timer = 5
+                // this.timer = Math.random() * 4 + 3
                 this.ChangeState(4, IMG_URL + "pet_walk.gif", 3, 7)
             } else if (this.touchM > 8) {
                 this.distance = 0
@@ -134,6 +138,8 @@ class aPet {
         } else {
             this.touchM = this.touchM > 0 ? this.touchM - 1 : 0
             if (this.state == 5) {
+                // this.img.src = IMG_URL + "pet_rest.gif"
+                // this.state = 0
                 this.ChangeState(0, IMG_URL + "pet_rest.gif", null)
             }
         }
@@ -145,7 +151,7 @@ class aPet {
     }
     ChangeState(state, img = null, timer1 = 8, timer2 = 11, distance = null) {
         this.state = state
-        if (img) this.img.src = img
+        this.img.src = img ? img : this.img.src
         this.timer = timer1 ? Math.random() * (timer2 - timer1) + timer1 : this.timer
         this.distance = distance ? distance : this.distance
     }
@@ -204,15 +210,14 @@ setInterval(() => {
         Pet.set()
         Pet.draw()
     }
+
 }, DELAY);
 
 // -----------------------------------------------------------------------
-function newPet(data) {
-    console.log(data)
-    // chrome.storage.local.get(["Pets"]).then((result) => {
-    // P = result.Pets[result.Pets.length - 1]
-    // });
-    Pets.push(new aPet(...GetRandXY(), data.size, data.color))
+function newPet() {
+    chrome.storage.local.get(["Pets"]).then((result) => {
+        console.log(result.Pets);
+    });
 }
 function ChangeClass(data) {
     if (data.checked) {
@@ -225,22 +230,9 @@ function ChangeClass(data) {
         }
     }
 }
-function ChangeState(data) {
-    for (const Pet of Pets) {
-        Pet.ChangeState(data.checked ? data.NewState : 0, IMG_URL + "pet_rest.gif", null, null, 0)
-        Pet.img.style.height = data.checked ? "100px" : '120px'
-    }
-}
 document.addEventListener('mousemove', (event) => {
     MouseX = event.clientX;
     MouseY = event.clientY;
-});
-document.addEventListener('mousedown', function (event) {
-    isMouseDown = true;
-});
-
-document.addEventListener('mouseup', function (event) {
-    isMouseDown = false;
 });
 
 chrome.runtime.onMessage.addListener(
@@ -249,15 +241,13 @@ chrome.runtime.onMessage.addListener(
 
         // console.log(sender.tab ? "from " + sender.tab.url : "from the extension");
         // console.log(request.greeting)
-        g = request.greeting
-        if (g == "NewFish") {
+
+        if (request.greeting == "NewFish") {
             fishes.push(new aFish(MouseX, MouseY, Math.random() * 40 + 50))
-        } else if (g == "NewPet") {
-            newPet(request.data)
-        } else if (g == "ChangeClass") {
+        } else if (request.greeting == "NewPet") {
+            newPet()
+        } else if (request.greeting == "ChangeClass") {
             ChangeClass(request.data)
-        } else if (g == "ChangeState") {
-            ChangeState(request.data)
         }
         sendResponse({ farewell: "ok" });
     }

@@ -5,11 +5,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pet</title>
+    <link rel="stylesheet" type="text/css" href="popup.css">
+
 </head>
 
 <body>
-    <img src="images\html.png" >
+    <!-- <img src="images\html.png" > -->
+    <div class="container">
+        <label for="switch1">睡覺</label>
+        <label class="switch">
+            <input type="checkbox" data-Myclass="sleeping" id="switch1">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <label for="switch2">隱形</label>
+        <label class="switch">
+            <input type="checkbox" data-Myclass="invisible" id="switch2">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <hr>
+    <div class="slider-container">
+        <label for="switch">大小</label>
+        <input type="range" min="40" max="240" value="120" id="slider1">
+        <label for="switch">顏色</label>
+        <input type="range" min="0" max="360" value="0" id="slider2">
+        <div class="slider-containerr">
+            <button id="createButton">產生</button>
+        </div>
+    </div>
+    <script src="popup.js"></script>
 </body>
 
 </html>

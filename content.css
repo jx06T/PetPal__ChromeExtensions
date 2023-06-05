@@ -1,13 +1,19 @@
-.jx06pet{
-    z-index : 9999;
-    filter: blur(0px) !important;
+.jx06pet {
+    z-index: 9999;
+    /* filter: blur(0px)   hue-rotate(180deg)!important; */
+    /* filter: blur(0px) !important; */
     user-select: none;
     /* pointer-events: none; */
 }
-.jx06fish{
-    z-index : 9990;
+
+.jx06fish {
+    z-index: 9990;
     filter: blur(0px) !important;
     user-select: none;
     transform-origin: right center;
     /* pointer-events: none; */
+}
+
+.invisible {
+    display: none !important;
 }
