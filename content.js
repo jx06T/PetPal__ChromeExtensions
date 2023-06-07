@@ -5,12 +5,13 @@ let isMouseDown = false;
 const DELAY = 50
 let testD = 0
 let testd = 1
+let STATE = { sleeping: false, invisible: false }
 function GetRandXY() {
     return [Math.random() * (window.innerWidth - 140) + 70, Math.random() * (window.innerHeight - 160) + 80]
 }
 function ResetAllPet() {
     for (const Pet of Pets) {
-        Pet.state = 5
+        Pet.ChangeState(5, IMG_URL + "pet_rest.gif", 24, 28)
     }
 }
 
@@ -96,15 +97,21 @@ class aPet {
         this.y += this.vy
 
     }
+    setSize(s) {
+        this.size = s
+        this.img.style.height = s + "px";
+
+    }
     set() {
         if (fishes.length > 0) {
             if (this.state != 6) {
                 this.ChangeState(6, IMG_URL + "pet_walk.gif", 10, 14)
-            } else if (this.distance < 0.5) {
+            } else if (this.distance < 0.5 * (this.size / 120)) {
                 this.food.eaten()
                 this.ChangeState(5, IMG_URL + "pet_rest.gif", 24, 28)
                 this.vx = 0
                 this.vy = 0
+                this.setSize(parseInt(this.img.style.height) + 15)
                 ResetAllPet()
             }
         }
@@ -147,7 +154,7 @@ class aPet {
         this.state = state
         if (img) this.img.src = img
         this.timer = timer1 ? Math.random() * (timer2 - timer1) + timer1 : this.timer
-        this.distance = distance ? distance : this.distance
+        this.distance = distance || distance === 0 ? distance : this.distance
     }
 }
 
@@ -189,9 +196,12 @@ class aFish {
 // -----------------------------------------------------------------------
 let fishes = []
 let Pets = []
-for (let i = 0; i < 2; i++) {
-    Pets.push(new aPet(...GetRandXY(), 120))
-}
+
+chrome.storage.local.get(["Pets"]).then((result) => {
+    for (const P of result.Pets) {
+        Pets.push(new aPet(...GetRandXY(), P.size, P.color))
+    }
+});
 setInterval(() => {
     testD += testd
     if (testD > 14) testd = -3
@@ -212,23 +222,26 @@ function newPet(data) {
     // chrome.storage.local.get(["Pets"]).then((result) => {
     // P = result.Pets[result.Pets.length - 1]
     // });
-    Pets.push(new aPet(...GetRandXY(), data.size, data.color))
+    Pets.push(new aPet(...GetRandXY(), Number(data.size), Number(data.color)))
 }
-function ChangeClass(data) {
-    if (data.checked) {
-        for (const Pet of Pets) {
-            Pet.img.classList.add(data.Myclass);
+
+function ChangeSTATE(data) {
+    console.log(data)
+    if (STATE != data) {
+        STATE = data
+        if (STATE.invisible) {
+            for (const Pet of Pets) {
+                Pet.img.classList.add("invisible");
+            }
+        } else {
+            for (const Pet of Pets) {
+                Pet.img.classList.remove("invisible");
+            }
         }
-    } else {
         for (const Pet of Pets) {
-            Pet.img.classList.remove(data.Myclass);
+            Pet.ChangeState(STATE.sleeping ? 7 : 1, IMG_URL + "pet_rest.gif", 8, 11, 0)
+            Pet.setSize(STATE.sleeping ? parseInt(Pet.img.style.height) - 15 : parseInt(Pet.img.style.height) + 15)
         }
-    }
-}
-function ChangeState(data) {
-    for (const Pet of Pets) {
-        Pet.ChangeState(data.checked ? data.NewState : 0, IMG_URL + "pet_rest.gif", null, null, 0)
-        Pet.img.style.height = data.checked ? "100px" : '120px'
     }
 }
 document.addEventListener('mousemove', (event) => {
@@ -250,17 +263,25 @@ chrome.runtime.onMessage.addListener(
         // console.log(sender.tab ? "from " + sender.tab.url : "from the extension");
         // console.log(request.greeting)
         g = request.greeting
-        if (g == "NewFish") {
-            fishes.push(new aFish(MouseX, MouseY, Math.random() * 40 + 50))
-        } else if (g == "NewPet") {
-            newPet(request.data)
-        } else if (g == "ChangeClass") {
-            ChangeClass(request.data)
-        } else if (g == "ChangeState") {
-            ChangeState(request.data)
+        switch (g) {
+            case "NewFish":
+                fishes.push(new aFish(MouseX, MouseY, Math.random() * 40 + 50))
+            case "NewPet":
+                newPet(request.data)
+            case "GetSTATE":
+                sendResponse(STATE);
+                return
+            case "ChangeSTATE":
+                ChangeSTATE(request.data)
         }
-        sendResponse({ farewell: "ok" });
+        sendResponse({ ok: "ok" });
     }
 );
+// document.addEventListener('visibilitychange', function () {
+//     if (document.visibilityState === 'visible') {
+//         // 当切换到当前标签页时执行的代码
+//         console.log('切换到当前标签页');
+//     }
+// });
 
 // -----------------------------------------------------------------------

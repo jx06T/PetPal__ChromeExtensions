@@ -1,41 +1,54 @@
-function initiallll(switch1, switch2) {
-    switch1.checked = localStorage.getItem('switch1_S') != "false";
-    switch2.checked = localStorage.getItem('switch2_S') != "false";
+
+function send(data, switch1 = null, switch2 = null) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { greeting: "ChangeState", data: { checked: !!switch1.checked, NewState: 7 } })
+        chrome.tabs.sendMessage(tabs[0].id, data).then((r) => {
+            if (!switch1) return
+            switch1.checked = r.sleeping;
+            switch2.checked = r.invisible;
+        })
     });
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { greeting: "ChangeClass", data: { checked: !!switch2.checked, Myclass: switch2.dataset.myclass } })
+}
+function reset() {
+    chrome.storage.local.set({ Pets: [{ size: 120, color: 0 }] }).then(() => {
+        console.log('Data saved');
     });
 }
 document.addEventListener('DOMContentLoaded', function () {
 
+    const MyPet = document.querySelector('.jx06pet');
+    console.log(MyPet)
+    MyPet.style.height = 120 + "px";
+    MyPet.style.filter = "blur(0px) hue-rotate(" + 0 + "deg)";
     const switch1 = document.getElementById('switch1');
     const switch2 = document.getElementById('switch2');
     const slider1 = document.getElementById('slider1');
     const slider2 = document.getElementById('slider2');
-    const CreateButton = document.getElementById('createButton');
-    initiallll(switch1, switch2)
+    send({ greeting: "GetSTATE" }, switch1, switch2)
 
+
+    const CreateButton = document.getElementById('createButton');
     switch1.addEventListener("change", () => {
-        localStorage.setItem('switch1_S', switch1.checked);
-        console.log(!!switch1.checked)
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, { greeting: "ChangeState", data: { checked: !!switch1.checked, NewState: 7 } })
-        });
+        send({ greeting: "ChangeSTATE", data: { sleeping: !!switch1.checked, invisible: !!switch2.checked } })
+
     })
     switch2.addEventListener("change", () => {
-        localStorage.setItem('switch2_S', switch2.checked);
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, { greeting: "ChangeClass", data: { checked: !!switch2.checked, Myclass: switch2.dataset.myclass } })
-        });
+        send({ greeting: "ChangeSTATE", data: { sleeping: !!switch1.checked, invisible: !!switch2.checked } })
+
     })
+    slider1.addEventListener("input", () => {
+        MyPet.style.height = slider1.value + "px";
+    })
+    slider2.addEventListener("input", () => {
+        MyPet.style.filter = "blur(0px) hue-rotate(" + slider2.value + "deg)";
+    })
+
     // 将数据保存到chrome.storage并发送消息给content.js
     CreateButton.addEventListener('click', () => {
         const aPet = {
             size: slider1.value,
             color: slider2.value
         };
+
         // 保存数据到chrome.storage
         chrome.storage.local.get(["Pets"]).then((result) => {
             let pets = result.Pets;
@@ -45,9 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Data saved: ', pets);
             });
         });
-        // 发送消息给content.js
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, { greeting: "NewPet", data: aPet })
-        });
+        send({ greeting: "NewPet", data: aPet })
     });
 });
+// reset()
+
