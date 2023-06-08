@@ -4,6 +4,7 @@
     /* filter: blur(0px) !important; */
     user-select: none;
     /* pointer-events: none; */
+    cursor: grab;
 }
 
 .jx06fish {
