@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // 保存数据到chrome.storage
         chrome.storage.local.get(["Pets"]).then((result) => {
             let pets = result.Pets;
+            if (!pets) {
+                pets = []
+            }
             console.log(pets)
             pets.push(aPet)
             chrome.storage.local.set({ Pets: pets }).then(() => {
