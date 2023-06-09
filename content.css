@@ -1,10 +1,10 @@
 .jx06pet {
     z-index: 9999;
+    user-select: none;
+    cursor: grab;
     /* filter: blur(0px)   hue-rotate(180deg)!important; */
     /* filter: blur(0px) !important; */
-    user-select: none;
     /* pointer-events: none; */
-    cursor: grab;
 }
 
 .jx06fish {
@@ -15,6 +15,12 @@
     /* pointer-events: none; */
 }
 
-.invisible {
-    display: none !important;
+.jx06invisible {
+    /* display: none !important; */
+    pointer-events: none;
+    opacity: 0.4 !important;
 }
+
+/* body { */
+/* cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/20230608test/images/mouse.png"), grab; */
+/* } */

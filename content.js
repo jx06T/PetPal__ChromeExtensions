@@ -18,7 +18,8 @@ function ResetAllPet() {
 // -----------------------------------------------------------------------
 class aPet {
     // 建構函式
-    constructor(x, y, size, color = 0) {
+    constructor(x, y, size, color = 0, id = null) {
+        this.id = id
         this.size = size
         this.color = color
         this.x = x;
@@ -83,14 +84,7 @@ class aPet {
             this.d = this.d + this.speed * ((this.touchM / 1.8) + 1)
             return
         }
-
         this.distance -= this.state == 2 ? 1.4 : this.state == 1 ? 1.1 : 2.1
-
-        // if (this.vy < 2.5) {
-        //     this.d = this.vx * 6 / (this.speed / 8)
-        // } else {
-        //     this.d += this.vx * 4.5
-        // }
         this.d = (180 / Math.PI) * (this.vx > 0 ? Math.atan(this.vy / this.vx) : Math.PI + Math.atan(this.vy / this.vx)) + 90 + testD
 
         this.x += this.vx
@@ -100,7 +94,8 @@ class aPet {
     setSize(s) {
         this.size = s
         this.img.style.height = s + "px";
-
+        oldPets[this.id].size = s
+        chrome.storage.local.set({ Pets: oldPets })
     }
     set() {
         if (fishes.length > 0) {
@@ -125,7 +120,7 @@ class aPet {
             }
 
         }
-        if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.35) {
+        if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.4) {
             this.touchM = this.touchM + 1
             if (this.state == 0 || this.state == 1) {
                 this.ChangeState(2, IMG_URL + "pet_walk.gif", 20, 24, 0)
@@ -155,6 +150,12 @@ class aPet {
         if (img) this.img.src = img
         this.timer = timer1 ? Math.random() * (timer2 - timer1) + timer1 : this.timer
         this.distance = distance || distance === 0 ? distance : this.distance
+    }
+    caught(type) {
+        switch (type) {
+            case 0:
+                this.img.remove()
+        }
     }
 }
 
@@ -196,12 +197,28 @@ class aFish {
 // -----------------------------------------------------------------------
 let fishes = []
 let Pets = []
-
-chrome.storage.local.get(["Pets"]).then((result) => {
-    for (const P of result.Pets) {
-        Pets.push(new aPet(...GetRandXY(), P.size, P.color))
+let oldPets = []
+async function initialPet() {
+    const result = await chrome.storage.local.get(["isDeactivate"])
+    const result2 = await chrome.storage.local.get(["Pets"])
+    if (Pets.length > 0 && (result.isDeactivate || JSON.stringify(oldPets) != JSON.stringify(result2.Pets))) {
+        for (const Pet of Pets) {
+            Pet.caught(0)
+        }
+        Pets = []
+        oldPets = []
     }
-});
+    if (result.isDeactivate || JSON.stringify(oldPets) == JSON.stringify(result2.Pets)) return
+    oldPets = result2.Pets
+    id = 0
+    for (const P of result2.Pets) {
+        Pets.push(new aPet(...GetRandXY(), P.size, P.color, id))
+        id += 1
+    }
+
+}
+initialPet()
+
 setInterval(() => {
     testD += testd
     if (testD > 14) testd = -3
@@ -218,29 +235,28 @@ setInterval(() => {
 
 // -----------------------------------------------------------------------
 function newPet(data) {
-    console.log(data)
-    // chrome.storage.local.get(["Pets"]).then((result) => {
-    // P = result.Pets[result.Pets.length - 1]
-    // });
-    Pets.push(new aPet(...GetRandXY(), Number(data.size), Number(data.color)))
+    oldPets.push({
+        color: Number(data.color),
+        size: Number(data.size)
+    })
+    Pets.push(new aPet(...GetRandXY(), Number(data.size), Number(data.color), oldPets.length))
 }
 
 function ChangeSTATE(data) {
-    console.log(data)
     if (STATE != data) {
         STATE = data
         if (STATE.invisible) {
             for (const Pet of Pets) {
-                Pet.img.classList.add("invisible");
+                Pet.img.classList.add("jx06invisible");
             }
         } else {
             for (const Pet of Pets) {
-                Pet.img.classList.remove("invisible");
+                Pet.img.classList.remove("jx06invisible");
             }
         }
         for (const Pet of Pets) {
             Pet.ChangeState(STATE.sleeping ? 7 : 1, IMG_URL + "pet_rest.gif", 8, 11, 0)
-            Pet.setSize(STATE.sleeping ? parseInt(Pet.img.style.height) - 15 : parseInt(Pet.img.style.height) + 15)
+            Pet.img.style.filter = "blur(0px) hue-rotate(" + Pet.color + "deg) brightness(" + (STATE.sleeping ? 95 : 100) + "%)"
         }
     }
 }
@@ -259,29 +275,33 @@ document.addEventListener('mouseup', function (event) {
 chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
         console.log(request)
-
         // console.log(sender.tab ? "from " + sender.tab.url : "from the extension");
         // console.log(request.greeting)
         g = request.greeting
         switch (g) {
             case "NewFish":
                 fishes.push(new aFish(MouseX, MouseY, Math.random() * 40 + 50))
+                break
             case "NewPet":
                 newPet(request.data)
+                break
             case "GetSTATE":
                 sendResponse(STATE);
                 return
             case "ChangeSTATE":
                 ChangeSTATE(request.data)
+                break
+            case "isDeactivate":
+                initialPet()
+                break
         }
         sendResponse({ ok: "ok" });
     }
 );
-// document.addEventListener('visibilitychange', function () {
-//     if (document.visibilityState === 'visible') {
-//         // 当切换到当前标签页时执行的代码
-//         console.log('切换到当前标签页');
-//     }
-// });
+document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') {
+        initialPet()
+    }
+});
 
 // -----------------------------------------------------------------------

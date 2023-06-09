@@ -2,15 +2,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 250px
-    /* 可根据需要调整高度 */
+  height: 280px
+    /* min-width: 100px; */
+    /* min-height: 120px; */
 }
 
 .switch {
   position: relative;
   display: inline-block;
   width: 60px;
-  height: 34px;
+  height: 32px;
 }
 
 .switch input {
@@ -34,8 +35,8 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 24px;
+  width: 24px;
   left: 4px;
   bottom: 4px;
   background-color: white;

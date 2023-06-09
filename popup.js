@@ -10,23 +10,26 @@ function send(data, switch1 = null, switch2 = null) {
 }
 function reset() {
     chrome.storage.local.set({ Pets: [{ size: 120, color: 0 }] }).then(() => {
-        console.log('Data saved');
+        // console.log('Data saved');
     });
 }
 document.addEventListener('DOMContentLoaded', function () {
 
     const MyPet = document.querySelector('.jx06pet');
-    console.log(MyPet)
     MyPet.style.height = 120 + "px";
     MyPet.style.filter = "blur(0px) hue-rotate(" + 0 + "deg)";
     const switch1 = document.getElementById('switch1');
     const switch2 = document.getElementById('switch2');
+    const switch3 = document.getElementById('switch3');
     const slider1 = document.getElementById('slider1');
     const slider2 = document.getElementById('slider2');
-    send({ greeting: "GetSTATE" }, switch1, switch2)
-
-
     const CreateButton = document.getElementById('createButton');
+
+    chrome.storage.local.get(["isDeactivate"]).then((result) => {
+        switch3.checked = result.isDeactivate;
+    });
+
+    send({ greeting: "GetSTATE" }, switch1, switch2)
     switch1.addEventListener("change", () => {
         send({ greeting: "ChangeSTATE", data: { sleeping: !!switch1.checked, invisible: !!switch2.checked } })
 
@@ -35,6 +38,14 @@ document.addEventListener('DOMContentLoaded', function () {
         send({ greeting: "ChangeSTATE", data: { sleeping: !!switch1.checked, invisible: !!switch2.checked } })
 
     })
+    switch3.addEventListener("change", () => {
+        chrome.storage.local.set({ isDeactivate: !!switch3.checked }).then(() => {
+            // console.log('Data saved: ', !!switch3.checked);
+        });
+        CreateButton.disabled = !!switch3.checked;
+        send({ greeting: "isDeactivate", data: !!switch3.checked })
+    })
+
     slider1.addEventListener("input", () => {
         MyPet.style.height = slider1.value + "px";
     })
@@ -45,8 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 将数据保存到chrome.storage并发送消息给content.js
     CreateButton.addEventListener('click', () => {
         const aPet = {
-            size: slider1.value,
-            color: slider2.value
+            size: Number(slider1.value),
+            color: Number(slider2.value)
         };
 
         // 保存数据到chrome.storage
@@ -55,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!pets) {
                 pets = []
             }
-            console.log(pets)
+            // console.log(pets)
             pets.push(aPet)
             chrome.storage.local.set({ Pets: pets }).then(() => {
                 console.log('Data saved: ', pets);
