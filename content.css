@@ -7,6 +7,14 @@
     /* pointer-events: none; */
 }
 
+.jx06penguin {
+    z-index: 9999;
+    user-select: none;
+    cursor: grab;
+    opacity: 0.8 !important;
+
+}
+
 .jx06fish {
     z-index: 9990;
     filter: blur(0px) !important;

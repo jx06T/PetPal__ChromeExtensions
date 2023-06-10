@@ -235,8 +235,16 @@ async function initialPet() {
     }
 
 }
+function penguin() {
+    const myimg = document.createElement("img");
+    myimg.src = IMG_URL + "Penguin.gif"
+    myimg.setAttribute("class", "jx06Penguin");
+    document.body.insertBefore(myimg, document.body.firstChild);
+    myimg.style.position = 'fixed';
+    myimg.style.height = "50px";
+}
 initialPet()
-
+penguin()
 setInterval(() => {
     testD += testd
     if (testD > 14) testd = -3
