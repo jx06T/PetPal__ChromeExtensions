@@ -138,7 +138,7 @@ class aPet {
                     });
                     chrome.storage.local.set({ Pets: LocalityPets })
                     isPenguin = false
-                    // mypenguin.classList.remove("jx06invisible")
+                    mypenguin.classList.remove("jx06invisible")
                     document.body.classList.remove("jx06Cpenguin")
                 }
             }
@@ -261,12 +261,12 @@ mypenguin.setAttribute("class", "jx06penguin");
 document.body.insertBefore(mypenguin, document.body.firstChild);
 mypenguin.addEventListener("click", () => {
     if (!isPenguin) {
-        // mypenguin.classList.add("jx06Cpenguin");
-        document.body.classList.add("jx06Cpenguin")
+        mypenguin.classList.add("jx06Cpenguin");
+        document.body.classList.add("jx06Cbody")
         isPenguin = true
     } else {
-        // mypenguin.classList.remove("jx06Cpenguin");
-        document.body.classList.remove("jx06Cpenguin")
+        mypenguin.classList.remove("jx06Cpenguin");
+        document.body.classList.remove("jx06Cbody")
         isPenguin = false
     }
     // mypenguin.classList.remove("jx06invisible");

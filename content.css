@@ -25,9 +25,12 @@
 }
 
 .jx06Cpenguin {
-    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/Penguin.gif"), grab;
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/mouse2.png"), grab;
 }
 
+.jx06Cbody {
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/Penguin.gif"), grab;
+}
 
 .jx06fish {
     z-index: 9990;
