@@ -9,9 +9,12 @@ function send(data, switch1 = null, switch2 = null) {
     });
 }
 function reset() {
-    chrome.storage.local.set({ Pets: [{ size: 120, color: 0 }] }).then(() => {
+    chrome.storage.local.set({ Pets: [{ size: 120, color: 0, id: randId() }] }).then(() => {
         // console.log('Data saved');
     });
+}
+function randId() {
+    return Math.random().toString(36).substring(2.9) + Math.random().toString(36).substring(2.9)
 }
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -57,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
     CreateButton.addEventListener('click', () => {
         const aPet = {
             size: Number(slider1.value),
-            color: Number(slider2.value)
+            color: Number(slider2.value),
+            id: randId()
         };
 
         // 保存数据到chrome.storage
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // console.log(pets)
             pets.push(aPet)
             chrome.storage.local.set({ Pets: pets }).then(() => {
-                console.log('Data saved: ', pets);
+                // console.log('Data saved: ', pets);
             });
         });
         send({ greeting: "NewPet", data: aPet })

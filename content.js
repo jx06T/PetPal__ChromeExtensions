@@ -27,11 +27,11 @@ class aPet {
         this.vx = 0;
         this.vy = 0;
         this.d = 90;
-        this.speed = 6
+        this.speed = 6.5
 
         this.destination = [x, y]
         this.distance = 0
-        this.timer = 7
+        this.timer = Math.random() * 6 + 4
         this.state = 0//0沒事,1遊走,2跟隨,4轉圈,5冷靜,6吃魚,7睡覺
         this.touchM = 0
         this.food
@@ -65,11 +65,11 @@ class aPet {
         }
         if (this.state == 6 || this.distance < 0.5 && (this.state == 1 || this.state == 2)) {
             if (this.state == 6) {
-                this.speed = 5 + 5 * fishes.length
+                this.speed = 6 + 5 * fishes.length
                 this.food = fishes[Math.floor(Math.random() * fishes.length)]
                 this.destination = [this.food.x, this.food.y]
             } else {
-                this.speed = 6
+                this.speed = 6.5
                 this.destination = MouseX + MouseY > 1 && this.state == 2 ? [MouseX, MouseY] : GetRandXY()
                 this.x -= this.vx
                 this.y -= this.vy
@@ -92,10 +92,13 @@ class aPet {
 
     }
     setSize(s) {
+        this.speed -= 0.01 * (s - this.size)
         this.size = s
         this.img.style.height = s + "px";
-        oldPets[this.id].size = s
-        chrome.storage.local.set({ Pets: oldPets })
+        if (LocalityPets.find(item => item.id === this.id).size != s) {
+            LocalityPets.find(item => item.id === this.id).size = s
+            chrome.storage.local.set({ Pets: LocalityPets })
+        };
     }
     set() {
         if (fishes.length > 0) {
@@ -113,7 +116,7 @@ class aPet {
         this.timer -= DELAY / 1000
         if (this.timer < 0) {
             if (this.state == 0) {
-                this.ChangeState(1, IMG_URL + "pet_walk.gif", 4, 7)
+                this.ChangeState(1, IMG_URL + "pet_walk.gif", 6, 9)
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
                 this.timer = this.state == 4 ? 18 : this.state == 1 ? 7 : 10
                 this.ChangeState(this.state == 4 ? 5 : 0, IMG_URL + "pet_rest.gif", null)
@@ -136,7 +139,7 @@ class aPet {
         } else {
             this.touchM = this.touchM > 0 ? this.touchM - 1 : 0
             if (this.state == 5) {
-                this.ChangeState(0, IMG_URL + "pet_rest.gif", null)
+                this.ChangeState(0, IMG_URL + "pet_rest.gif", 7, 14)
             }
         }
     }
@@ -151,10 +154,18 @@ class aPet {
         this.timer = timer1 ? Math.random() * (timer2 - timer1) + timer1 : this.timer
         this.distance = distance || distance === 0 ? distance : this.distance
     }
-    caught(type) {
-        switch (type) {
-            case 0:
-                this.img.remove()
+    updateSkin(data) {
+        // const NewSkin = data.filter(item => item.id == this.id);
+        const NewSkin = data.find(item => item.id == this.id);
+        if (NewSkin == undefined) {
+            this.img.remove()
+            Pets = Pets.filter((item) => {
+                return item !== this;
+            });
+            return
+        }
+        if (this.size != NewSkin.size) {
+            this.setSize(NewSkin.size)
         }
     }
 }
@@ -194,26 +205,33 @@ class aFish {
         }
     }
 }
+
 // -----------------------------------------------------------------------
 let fishes = []
 let Pets = []
-let oldPets = []
+let LocalityPets = []
 async function initialPet() {
     const result = await chrome.storage.local.get(["isDeactivate"])
-    const result2 = await chrome.storage.local.get(["Pets"])
-    if (Pets.length > 0 && (result.isDeactivate || JSON.stringify(oldPets) != JSON.stringify(result2.Pets))) {
-        for (const Pet of Pets) {
-            Pet.caught(0)
+    if (result.isDeactivate) {
+        if (Pets.length > 0) {
+            for (const Pet of Pets) {
+                Pet.img.remove()
+            }
+            Pets = []
+            LocalityPets = []
         }
-        Pets = []
-        oldPets = []
+        return true
     }
-    if (result.isDeactivate || JSON.stringify(oldPets) == JSON.stringify(result2.Pets)) return
-    oldPets = result2.Pets
-    id = 0
-    for (const P of result2.Pets) {
-        Pets.push(new aPet(...GetRandXY(), P.size, P.color, id))
-        id += 1
+    const resultP = await chrome.storage.local.get(["Pets"])
+    if (JSON.stringify(LocalityPets) == JSON.stringify(resultP.Pets)) return
+    for (const P of resultP.Pets) {
+        if (LocalityPets.find(item => item.id == P.id) == undefined) {
+            Pets.push(new aPet(...GetRandXY(), Number(P.size), Number(P.color), P.id))
+        }
+    }
+    LocalityPets = resultP.Pets
+    for (const Pet of Pets) {
+        Pet.updateSkin(resultP.Pets)
     }
 
 }
@@ -235,11 +253,10 @@ setInterval(() => {
 
 // -----------------------------------------------------------------------
 function newPet(data) {
-    oldPets.push({
-        color: Number(data.color),
-        size: Number(data.size)
+    chrome.storage.local.get(["Pets"]).then(NPets => {
+        LocalityPets = NPets.Pets
     })
-    Pets.push(new aPet(...GetRandXY(), Number(data.size), Number(data.color), oldPets.length))
+    Pets.push(new aPet(...GetRandXY(), Number(data.size), Number(data.color), data.id))
 }
 
 function ChangeSTATE(data) {
@@ -298,10 +315,10 @@ chrome.runtime.onMessage.addListener(
         sendResponse({ ok: "ok" });
     }
 );
-document.addEventListener('visibilitychange', function () {
+
+window.addEventListener('focus', () => {
     if (document.visibilityState === 'visible') {
         initialPet()
     }
-});
-
+})
 // -----------------------------------------------------------------------
