@@ -1,4 +1,5 @@
-const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/"
+// const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/"
+const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/"
 let MouseX = 0;
 let MouseY = 0;
 let isMouseDown = false;
@@ -40,9 +41,8 @@ class aPet {
         myimg.src = IMG_URL + "pet_rest.gif"
         myimg.setAttribute("class", "jx06pet");
         document.body.insertBefore(myimg, document.body.firstChild);
-        myimg.style.position = 'fixed';
-        // myimg.style.position = 'absolute';
         myimg.style.height = size + "px";
+        myimg.style.position = 'fixed';
         myimg.style.left = x + "px";
         myimg.style.top = y + "px";
         myimg.style.filter = "blur(0px) hue-rotate(" + color + "deg)";
@@ -121,10 +121,27 @@ class aPet {
                 this.timer = this.state == 4 ? 18 : this.state == 1 ? 7 : 10
                 this.ChangeState(this.state == 4 ? 5 : 0, IMG_URL + "pet_rest.gif", null)
             }
-
         }
+        if (!isPenguin)
+            this.img.classList.remove("jx06Cpet")
         if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.4) {
             this.touchM = this.touchM + 1
+            if (isPenguin) {
+                this.img.classList.add("jx06Cpet")
+                if (isMouseDown) {
+                    this.img.remove()
+                    Pets = Pets.filter((item) => {
+                        return item !== this;
+                    });
+                    LocalityPets = LocalityPets.filter((item) => {
+                        return item.id !== this.id;
+                    });
+                    chrome.storage.local.set({ Pets: LocalityPets })
+                    isPenguin = false
+                    // mypenguin.classList.remove("jx06invisible")
+                    document.body.classList.remove("jx06Cpenguin")
+                }
+            }
             if (this.state == 0 || this.state == 1) {
                 this.ChangeState(2, IMG_URL + "pet_walk.gif", 20, 24, 0)
                 return
@@ -235,17 +252,29 @@ async function initialPet() {
     }
 
 }
-function penguin() {
-    const myimg = document.createElement("img");
-    myimg.src = IMG_URL + "Penguin.gif"
-    myimg.setAttribute("class", "jx06Penguin");
-    document.body.insertBefore(myimg, document.body.firstChild);
-    myimg.style.position = 'fixed';
-    myimg.style.height = "50px";
-    // cmesojijilv
-}
+// -----------------------------------------------------------------------
+
+let isPenguin = false
+const mypenguin = document.createElement("img");
+mypenguin.src = IMG_URL + "Penguin.gif"
+mypenguin.setAttribute("class", "jx06penguin");
+document.body.insertBefore(mypenguin, document.body.firstChild);
+mypenguin.addEventListener("click", () => {
+    if (!isPenguin) {
+        // mypenguin.classList.add("jx06Cpenguin");
+        document.body.classList.add("jx06Cpenguin")
+        isPenguin = true
+    } else {
+        // mypenguin.classList.remove("jx06Cpenguin");
+        document.body.classList.remove("jx06Cpenguin")
+        isPenguin = false
+    }
+    // mypenguin.classList.remove("jx06invisible");
+
+})
+// -----------------------------------------------------------------------
+
 initialPet()
-penguin()
 setInterval(() => {
     testD += testd
     if (testD > 14) testd = -3
