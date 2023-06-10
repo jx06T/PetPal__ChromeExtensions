@@ -242,7 +242,6 @@ function penguin() {
     document.body.insertBefore(myimg, document.body.firstChild);
     myimg.style.position = 'fixed';
     myimg.style.height = "50px";
-    
 }
 initialPet()
 penguin()
