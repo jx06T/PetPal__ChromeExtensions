@@ -15,12 +15,12 @@
     z-index: 9999;
     user-select: none;
     cursor: grab;
-    opacity: 0.8 !important;
+    opacity: 0.85 !important;
     position: fixed;
     /* position: absolute; */
     height: 60px;
-    top: 15px;
-    right: 15px;
+    top: 45px;
+    right: 25px;
     filter: blur(0px) !important;
 }
 
