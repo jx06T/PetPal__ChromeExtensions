@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chrome.storage.local.get(["isDeactivate"]).then((result) => {
         switch3.checked = result.isDeactivate;
+        CreateButton.disabled = result.isDeactivate;
     });
 
     send({ greeting: "GetSTATE" }, switch1, switch2)

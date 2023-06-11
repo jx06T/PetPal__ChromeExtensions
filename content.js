@@ -28,7 +28,7 @@ class aPet {
         this.vx = 0;
         this.vy = 0;
         this.d = 90;
-        this.speed = 6.5
+        this.speed = 6.5 - (this.size / 130)
 
         this.destination = [x, y]
         this.distance = 0
@@ -65,11 +65,11 @@ class aPet {
         }
         if (this.state == 6 || this.distance < 0.5 && (this.state == 1 || this.state == 2)) {
             if (this.state == 6) {
-                this.speed = 6 + 5 * fishes.length
+                this.speed = 6.5 - (this.size / 130) + 5 * fishes.length
                 this.food = fishes[Math.floor(Math.random() * fishes.length)]
                 this.destination = [this.food.x, this.food.y]
             } else {
-                this.speed = 6.5
+                this.speed = 6.5 - (this.size / 130)
                 this.destination = MouseX + MouseY > 1 && this.state == 2 ? [MouseX, MouseY] : GetRandXY()
                 this.x -= this.vx
                 this.y -= this.vy
@@ -92,7 +92,6 @@ class aPet {
 
     }
     setSize(s) {
-        this.speed -= 0.01 * (s - this.size)
         this.size = s
         this.img.style.height = s + "px";
         if (LocalityPets.find(item => item.id === this.id).size != s) {
@@ -129,17 +128,18 @@ class aPet {
             if (isPenguin) {
                 this.img.classList.add("jx06Cpet")
                 if (isMouseDown) {
-                    this.img.remove()
-                    Pets = Pets.filter((item) => {
-                        return item !== this;
-                    });
-                    LocalityPets = LocalityPets.filter((item) => {
-                        return item.id !== this.id;
-                    });
-                    chrome.storage.local.set({ Pets: LocalityPets })
-                    isPenguin = false
-                    mypenguin.classList.remove("jx06invisible")
-                    document.body.classList.remove("jx06Cpenguin")
+                    if (this.size < 100) {
+                        this.img.remove()
+                        Pets = Pets.filter((item) => {
+                            return item !== this;
+                        });
+                        LocalityPets = LocalityPets.filter((item) => {
+                            return item.id !== this.id;
+                        });
+                        chrome.storage.local.set({ Pets: LocalityPets })
+                    } else {
+                        this.setSize(parseInt(this.img.style.height) - 20)
+                    }
                 }
             }
             if (this.state == 0 || this.state == 1) {

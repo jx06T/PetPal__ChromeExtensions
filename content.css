@@ -35,6 +35,7 @@
 .jx06fish {
     z-index: 9990;
     filter: blur(0px) !important;
+    transform-origin: right center;
     /* pointer-events: none; */
 }
 
