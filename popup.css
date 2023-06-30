@@ -2,15 +2,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 250px
-    /* 可根据需要调整高度 */
+  height: 280px;
+  width: 220px
+    /* min-width: 100px; */
+    /* min-height: 120px; */
 }
 
 .switch {
   position: relative;
   display: inline-block;
   width: 60px;
-  height: 34px;
+  height: 32px;
 }
 
 .switch input {
@@ -34,8 +36,8 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 24px;
+  width: 24px;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -44,11 +46,11 @@
 }
 
 input:checked+.slider {
-  background-color: #2196F3;
+  background-color: #8e8e8f;
 }
 
 input:focus+.slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #8e8e8f;
 }
 
 input:checked+.slider:before {
@@ -76,8 +78,10 @@ input:checked+.slider:before {
 }
 
 .container label {
-  margin-right: 10px;
-  margin-left: 5px;
+  margin-right: 18px;
+  margin-left: 18px;
+  font-size: 11px;
+  letter-spacing: 4px;
 }
 
 #cre .slider-container {
@@ -108,14 +112,25 @@ input:checked+.slider:before {
   /* 设置容器高度 */
 }
 
-hr {
-  margin-top: 15px;
-  margin-bottom: 5px;
-
+.slider-containerr label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-bottom: -1px;
+  margin-top: 2px;
 }
 
+hr {
+  width: 95%;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  /* border-color: black; */
+}
+.slider-containerr hr {
+  margin-top: 5px;
+}
 #createButton {
-  padding: 6px 20px;
+  margin-top: 4px;
+  padding: 6px 24px;
   background-color: #cccccc;
   border-radius: 4px;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.4);

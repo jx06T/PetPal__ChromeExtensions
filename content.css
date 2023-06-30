@@ -1,19 +1,50 @@
 .jx06pet {
     z-index: 9999;
+    user-select: none;
+    /* cursor: grab; */
     /* filter: blur(0px)   hue-rotate(180deg)!important; */
     /* filter: blur(0px) !important; */
-    user-select: none;
     /* pointer-events: none; */
+}
+
+.jx06Cpet {
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/mouse.png"), grab;
+}
+
+.jx06penguin {
+    z-index: 9999;
+    user-select: none;
+    cursor: grab;
+    opacity: 0.85 !important;
+    position: fixed;
+    /* position: absolute; */
+    height: 60px;
+    top: 45px;
+    right: 25px;
+    filter: blur(0px) !important;
+}
+
+.jx06Cpenguin {
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/mouse2.png"), grab;
+}
+
+.jx06Cbody {
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/Penguin.gif"), grab;
 }
 
 .jx06fish {
     z-index: 9990;
     filter: blur(0px) !important;
-    user-select: none;
     transform-origin: right center;
     /* pointer-events: none; */
 }
 
-.invisible {
-    display: none !important;
+.jx06invisible {
+    /* display: none !important; */
+    pointer-events: none;
+    opacity: 0.4 !important;
 }
+
+/* body {
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/20230608test/images/mouse.png"), grab;
+} */
