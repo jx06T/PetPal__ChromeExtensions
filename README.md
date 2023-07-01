@@ -1,5 +1,5 @@
 # PetPal__ChromeExtensions
-1.下載資料夾並解壓縮：<>code -> download ZIP 
+1.下載資料夾並解壓縮：code -> download ZIP 
 
 2.開啟擴充頁面並打開開發者模式：擴充功能圖示(右上) -> 管理擴充功能 -> 開發人員模式
 
