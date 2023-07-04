@@ -1,5 +1,5 @@
-// const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/"
-const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/"
+const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/"
+// const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/V1.5/images/"
 let MouseX = 0;
 let MouseY = 0;
 let isMouseDown = false;
@@ -329,7 +329,7 @@ document.addEventListener('mouseup', function (event) {
 
 chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
-        console.log(request)
+        // console.log(request)
         // console.log(sender.tab ? "from " + sender.tab.url : "from the extension");
         // console.log(request.greeting)
         g = request.greeting
