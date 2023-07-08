@@ -255,7 +255,7 @@ async function initialPet() {
 // -----------------------------------------------------------------------
 let styleElement = document.createElement('style');
 let isSharp = false
-styleElement.textContent = '*{cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/Penguin.gif"), grab!important;'
+styleElement.textContent = '*{cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/Sharp.png"), grab!important;'
 function Sharp() {
     if (!isSharp) {
         // document.body.classList.add("jx06Cbody")
