@@ -12,25 +12,8 @@
     cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/mouse.png"), grab;
 }
 
-.jx06penguin {
-    z-index: 9999;
-    user-select: none;
-    cursor: grab;
-    opacity: 0.85 !important;
-    position: fixed;
-    /* position: absolute; */
-    height: 60px;
-    top: 45px;
-    right: 25px;
-    filter: blur(0px) !important;
-}
-
-.jx06Cpenguin {
-    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/mouse2.png"), grab;
-}
-
 .jx06Cbody {
-    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/Penguin.gif"), grab;
+    cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/Penguin.gif"), grab !important;
 }
 
 .jx06fish {

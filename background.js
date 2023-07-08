@@ -19,4 +19,10 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "sampleContextMenu") {
         chrome.tabs.sendMessage(tab.id, { greeting: "NewFish" });
     }
+
+});
+chrome.commands.onCommand.addListener((command, tab) => {
+    if (command == "Sharp") {
+        chrome.tabs.sendMessage(tab.id, { greeting: "Sharp" });
+    }
 });

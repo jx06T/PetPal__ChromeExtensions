@@ -44,5 +44,14 @@
             "http://*/*"
          ]
       }
-   ]
+   ],
+   "commands": {
+      "Sharp": {
+         "suggested_key": {
+            "default": "Alt+W",
+            "mac": "Alt+W"
+         },
+         "description": "戳他"
+      }
+   }
 }

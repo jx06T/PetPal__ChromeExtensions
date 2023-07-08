@@ -121,11 +121,11 @@ class aPet {
                 this.ChangeState(this.state == 4 ? 5 : 0, IMG_URL + "pet_rest.gif", null)
             }
         }
-        if (!isPenguin)
+        if (!isSharp)
             this.img.classList.remove("jx06Cpet")
         if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.4) {
             this.touchM = this.touchM + 1
-            if (isPenguin) {
+            if (isSharp) {
                 this.img.classList.add("jx06Cpet")
                 if (isMouseDown) {
                     if (this.size < 100) {
@@ -253,25 +253,21 @@ async function initialPet() {
 
 }
 // -----------------------------------------------------------------------
-
-let isPenguin = false
-const mypenguin = document.createElement("img");
-mypenguin.src = IMG_URL + "Penguin.gif"
-mypenguin.setAttribute("class", "jx06penguin");
-document.body.insertBefore(mypenguin, document.body.firstChild);
-mypenguin.addEventListener("click", () => {
-    if (!isPenguin) {
-        mypenguin.classList.add("jx06Cpenguin");
-        document.body.classList.add("jx06Cbody")
-        isPenguin = true
+let styleElement = document.createElement('style');
+let isSharp = false
+styleElement.textContent = '*{cursor: url("https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtensions/main/images/Penguin.gif"), grab!important;'
+function Sharp() {
+    if (!isSharp) {
+        // document.body.classList.add("jx06Cbody")
+        document.head.appendChild(styleElement);
+        isSharp = true
     } else {
-        mypenguin.classList.remove("jx06Cpenguin");
-        document.body.classList.remove("jx06Cbody")
-        isPenguin = false
+        document.head.removeChild(styleElement);
+        console.log(styleElement)
+        // document.body.classList.remove("jx06Cbody")
+        isSharp = false
     }
-    // mypenguin.classList.remove("jx06invisible");
-
-})
+}
 // -----------------------------------------------------------------------
 
 initialPet()
@@ -349,6 +345,9 @@ chrome.runtime.onMessage.addListener(
             case "isDeactivate":
                 initialPet()
                 break
+            case "Sharp":
+                Sharp()
+                break
         }
         sendResponse({ ok: "ok" });
     }
@@ -359,4 +358,5 @@ window.addEventListener('focus', () => {
         initialPet()
     }
 })
-// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------1
+
