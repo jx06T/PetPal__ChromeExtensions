@@ -263,7 +263,6 @@ function Sharp() {
         isSharp = true
     } else {
         document.head.removeChild(styleElement);
-        console.log(styleElement)
         // document.body.classList.remove("jx06Cbody")
         isSharp = false
     }
