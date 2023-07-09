@@ -4,7 +4,7 @@ function send(data, switch1 = null, switch2 = null) {
         chrome.tabs.sendMessage(tabs[0].id, data).then((r) => {
             if (!switch1) return
             switch1.checked = r.sleeping;
-            switch2.checked = r.invisible;
+            // switch2.checked = r.invisible;
         })
     });
 }
@@ -32,15 +32,19 @@ document.addEventListener('DOMContentLoaded', function () {
         switch3.checked = result.isDeactivate;
         CreateButton.disabled = result.isDeactivate;
     });
-
+    chrome.storage.local.get(["invisible"]).then((result) => {
+        switch2.checked = result.invisible;
+    });
+    
     send({ greeting: "GetSTATE" }, switch1, switch2)
     switch1.addEventListener("change", () => {
         send({ greeting: "ChangeSTATE", data: { sleeping: !!switch1.checked, invisible: !!switch2.checked } })
 
     })
     switch2.addEventListener("change", () => {
+        chrome.storage.local.set({ invisible: !!switch2.checked }).then(() => {
+        });
         send({ greeting: "ChangeSTATE", data: { sleeping: !!switch1.checked, invisible: !!switch2.checked } })
-
     })
     switch3.addEventListener("change", () => {
         chrome.storage.local.set({ isDeactivate: !!switch3.checked }).then(() => {

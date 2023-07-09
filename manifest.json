@@ -52,6 +52,27 @@
             "mac": "Alt+W"
          },
          "description": "戳他"
+      },
+      "NewPet": {
+         "suggested_key": {
+            "default": "Alt+N",
+            "mac": "Alt+N"
+         },
+         "description": "隨機"
+      },
+      "isDeactivate": {
+         "suggested_key": {
+            "default": "Alt+T",
+            "mac": "Alt+T"
+         },
+         "description": "停用"
+      },
+      "invisible": {
+         "suggested_key": {
+            "default": "Alt+I",
+            "mac": "Alt+I"
+         },
+         "description": "隱形"
       }
    }
 }

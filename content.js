@@ -6,7 +6,8 @@ let isMouseDown = false;
 const DELAY = 50
 let testD = 0
 let testd = 1
-let STATE = { sleeping: false, invisible: false }
+let STATE = {}
+
 function GetRandXY() {
     return [Math.random() * (window.innerWidth - 140) + 70, Math.random() * (window.innerHeight - 160) + 80]
 }
@@ -33,7 +34,7 @@ class aPet {
         this.destination = [x, y]
         this.distance = 0
         this.timer = Math.random() * 6 + 4
-        this.state = 0//0沒事,1遊走,2跟隨,4轉圈,5冷靜,6吃魚,7睡覺
+        this.state = 0//0沒事,1遊走,2跟隨,4轉圈,5冷靜,6吃魚,7睡覺,8融化
         this.touchM = 0
         this.food
 
@@ -49,7 +50,7 @@ class aPet {
         this.img = myimg
     }
     move() {
-        if (this.state == 0 || this.state == 5 || this.state == 7) {
+        if (this.state == 0 || this.state == 5 || this.state == 7 || this.state == 8) {
             if (this.state == 7 && this.touchM > 0) {
                 if (isMouseDown) {
                     this.x = MouseX
@@ -114,6 +115,16 @@ class aPet {
         }
         this.timer -= DELAY / 1000
         if (this.timer < 0) {
+            if (this.state == 8) {
+                this.img.remove()
+                Pets = Pets.filter((item) => {
+                    return item !== this;
+                });
+                LocalityPets = LocalityPets.filter((item) => {
+                    return item.id !== this.id;
+                });
+                chrome.storage.local.set({ Pets: LocalityPets })
+            }
             if (this.state == 0) {
                 this.ChangeState(1, IMG_URL + "pet_walk.gif", 6, 9)
             } else if (this.state == 4 || this.state == 1 || this.state == 2) {
@@ -121,24 +132,19 @@ class aPet {
                 this.ChangeState(this.state == 4 ? 5 : 0, IMG_URL + "pet_rest.gif", null)
             }
         }
+        if (this.state == 8) return
+
         if (!isSharp)
             this.img.classList.remove("jx06Cpet")
         if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.4) {
             this.touchM = this.touchM + 1
             if (isSharp) {
-                this.img.classList.add("jx06Cpet")
                 if (isMouseDown) {
-                    if (this.size < 100) {
-                        this.img.remove()
-                        Pets = Pets.filter((item) => {
-                            return item !== this;
-                        });
-                        LocalityPets = LocalityPets.filter((item) => {
-                            return item.id !== this.id;
-                        });
-                        chrome.storage.local.set({ Pets: LocalityPets })
+                    if (this.size < 130) {
+                        this.ChangeState(8, IMG_URL + "pet_melt.gif", 1.1, 1.1, 0)
                     } else {
-                        this.setSize(parseInt(this.img.style.height) - 20)
+                        this.ChangeState(5)
+                        this.setSize(parseInt(this.img.style.height) - 5)
                     }
                 }
             }
@@ -227,7 +233,7 @@ class aFish {
 let fishes = []
 let Pets = []
 let LocalityPets = []
-async function initialPet() {
+async function initialPet(count = 0) {
     const result = await chrome.storage.local.get(["isDeactivate"])
     if (result.isDeactivate) {
         if (Pets.length > 0) {
@@ -251,6 +257,10 @@ async function initialPet() {
         Pet.updateSkin(resultP.Pets)
     }
 
+    if (count == 1) {
+        const result = await chrome.storage.local.get(["invisible"])
+        ChangeSTATE({ sleeping: false, invisible: result.invisible })
+    }
 }
 // -----------------------------------------------------------------------
 let styleElement = document.createElement('style');
@@ -269,7 +279,8 @@ function Sharp() {
 }
 // -----------------------------------------------------------------------
 
-initialPet()
+initialPet(1)
+
 setInterval(() => {
     testD += testd
     if (testD > 14) testd = -3
@@ -294,9 +305,15 @@ function newPet(data) {
 
 function ChangeSTATE(data) {
     if (STATE != data) {
+        console.log("data", data)
+        if (data.sleeping == null) {
+            data.sleeping = STATE.sleeping
+        }
         STATE = data
         if (STATE.invisible) {
+            console.log(Pets)
             for (const Pet of Pets) {
+                console.log("!!!")
                 Pet.img.classList.add("jx06invisible");
             }
         } else {
