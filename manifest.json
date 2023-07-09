@@ -2,7 +2,7 @@
    "manifest_version": 3,
    "name": "Pet",
    "description": "河豚!?",
-   "version": "1.5",
+   "version": "1.7",
    "background": {
       "service_worker": "background.js"
    },
