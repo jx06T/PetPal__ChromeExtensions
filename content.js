@@ -124,6 +124,7 @@ class aPet {
                     return item.id !== this.id;
                 });
                 chrome.storage.local.set({ Pets: LocalityPets })
+                return
             }
             if (this.state == 0) {
                 this.ChangeState(1, IMG_URL + "pet_walk.gif", 6, 9)
@@ -141,7 +142,8 @@ class aPet {
             if (isSharp) {
                 if (isMouseDown) {
                     if (this.size < 130) {
-                        this.ChangeState(8, IMG_URL + "pet_melt.gif", 1.1, 1.1, 0)
+                        this.state = 8
+                        this.ChangeState(8, IMG_URL + "pet_melt.gif",0.9,0.9, 0)
                     } else {
                         this.ChangeState(5)
                         this.setSize(parseInt(this.img.style.height) - 5)
