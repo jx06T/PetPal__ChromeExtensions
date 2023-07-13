@@ -3,7 +3,7 @@ const IMG_URL = "https://raw.githubusercontent.com/jx06T/PetPal__ChromeExtension
 let MouseX = 0;
 let MouseY = 0;
 let isMouseDown = false;
-const DELAY = 50
+const DELAY = 100
 let testD = 0
 let testd = 1
 let STATE = {}
@@ -95,8 +95,11 @@ class aPet {
     setSize(s) {
         this.size = s
         this.img.style.height = s + "px";
-        if (LocalityPets.find(item => item.id === this.id).size != s) {
-            LocalityPets.find(item => item.id === this.id).size = s
+        if (this.state == 8||LocalityPets.find(item => item.id == this.id)== undefined) {
+            return
+        }
+        if (LocalityPets.find(item => item.id == this.id).size != s) {
+            LocalityPets.find(item => item.id == this.id).size = s
             chrome.storage.local.set({ Pets: LocalityPets })
         };
     }
@@ -139,15 +142,13 @@ class aPet {
             this.img.classList.remove("jx06Cpet")
         if (Math.sqrt((this.x - MouseX) * (this.x - MouseX) + (this.y - MouseY) * (this.y - MouseY)) < this.size * 0.4) {
             this.touchM = this.touchM + 1
-            if (isSharp) {
-                if (isMouseDown) {
-                    if (this.size < 130) {
-                        this.state = 8
-                        this.ChangeState(8, IMG_URL + "pet_melt.gif",0.9,0.9, 0)
-                    } else {
-                        this.ChangeState(5)
-                        this.setSize(parseInt(this.img.style.height) - 5)
-                    }
+            if (isSharp && isMouseDown) {
+                if (this.size < 130) {
+                    this.state = 8
+                    this.ChangeState(8, IMG_URL + "pet_melt.gif", 0.9, 0.9, 0)
+                } else {
+                    this.ChangeState(5)
+                    this.setSize(parseInt(this.img.style.height) - 5)
                 }
             }
             if (this.state == 0 || this.state == 1) {
@@ -282,20 +283,26 @@ function Sharp() {
 // -----------------------------------------------------------------------
 
 initialPet(1)
+let LastTimestamp = 0
+function step(timestamp) {
+    if (timestamp - LastTimestamp > 50) {
+        testD += testd
+        if (testD > 14) testd = -3
+        if (testD < -14) testd = 3
+        for (const fish of fishes) {
+            fish.move()
+        }
+        for (const Pet of Pets) {
+            Pet.move()
+            Pet.set()
+            Pet.draw()
+        }
+        LastTimestamp = timestamp
+    }
+    window.requestAnimationFrame(step);
+}
 
-setInterval(() => {
-    testD += testd
-    if (testD > 14) testd = -3
-    if (testD < -14) testd = 3
-    for (const fish of fishes) {
-        fish.move()
-    }
-    for (const Pet of Pets) {
-        Pet.move()
-        Pet.set()
-        Pet.draw()
-    }
-}, DELAY);
+window.requestAnimationFrame(step);
 
 // -----------------------------------------------------------------------
 function newPet(data) {
